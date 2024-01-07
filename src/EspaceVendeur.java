@@ -8,6 +8,7 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.HashMap;
 class Vendeur {
+	public static List<EspaceClient> clients = new ArrayList<>();
    private static final String EMAIL_VENDEUR = "vendeur@gmail.com";
    private static final String MOT_DE_PASSE = "123456";
    private static boolean estConnecte = false;
@@ -26,43 +27,49 @@ class Vendeur {
                return;
            }
        }
+
        boolean continuer = true;
        while (continuer) {
            System.out.println("Que souhaitez-vous faire en tant que vendeur ?");
            System.out.println("1. Afficher les réservations des clients");
            System.out.println("2. Supprimer une réservation");
            System.out.println("3. Revenir au menu principal (espace client)");
-           System.out.println("4. Afficher le stock de matériel");
+           System.out.println("4. Afficher le stock de matériel(en utilisant OCaml)");
+           System.out.println("5. Afficher les informations sur le stock(rn utilisant java)");
            String choixStr = scanner.nextLine();
            int choix;
+
            try {
                choix = Integer.parseInt(choixStr);
            } catch (NumberFormatException e) {
                System.out.println("Entrée invalide, veuillez saisir un nombre.");
                continue;
            }
+
            switch (choix) {
                case 1:
                    afficherReservationsClients();
-                   demanderContinuer(scanner);
                    break;
                case 2:
                    supprimerReservation(scanner);
-                   demanderContinuer(scanner);
                    break;
                case 3:
                    continuer = false;
                    break;
                case 4:
                    afficherStock();
-                   demanderContinuer(scanner);
+                   break;
+               case 5:
+                   afficherStockMateriel();
                    break;
                default:
                    System.out.println("Choix invalide. Veuillez choisir une option valide.");
                    break;
            }
+
+           demanderContinuer(scanner);
        }
-   }
+   } 
    private static void afficherStock() {
        try {
            ProcessBuilder pb = new ProcessBuilder("ocaml", "C:\\Users\\nassi\\Documents\\IUL\\IUL 1\\POO\\workplace\\nom_du_fichier_ocaml.ml");
@@ -94,7 +101,7 @@ class Vendeur {
            return;
        }
        System.out.println("Liste des réservations des clients :");
-       for (Client client : SystemeGestion.clients) {
+       for (EspaceClient client : SystemeGestion.clients) {
            System.out.println("Réservations pour le client avec l'adresse e-mail : " + client.getEmail());
            // Vérifier si le client a des réservations
            if (client.getReservations().isEmpty()) {
@@ -107,7 +114,7 @@ class Vendeur {
    private static void supprimerReservation(Scanner scanner) {
        System.out.print("Entrez l'adresse e-mail du client pour voir ses réservations : ");
        String emailClient = scanner.nextLine();
-       Client clientASupprimer = chercherClient(emailClient);
+       EspaceClient clientASupprimer = chercherClient(emailClient);
        if (clientASupprimer != null) {
            System.out.println("Réservations actuelles du client :");
            clientASupprimer.afficherReservations();
@@ -123,8 +130,46 @@ class Vendeur {
            System.out.println("Client non trouvé.");
        }
    }
-   private static Client chercherClient(String email) {
-       for (Client client : SystemeGestion.clients) {
+   public static void reinitialiserQuantites(List<LocationDeMateriel> materiels) {
+       for (LocationDeMateriel materiel : materiels) {
+           materiel.setQuantiteDisponible(30);
+       }
+   }
+
+   public static void gererReservation(EspaceClient client, boolean annulation) {
+	    Map<LocationDeMateriel, Integer> reservations = client.getReservations();
+	    for (Map.Entry<LocationDeMateriel, Integer> entry : reservations.entrySet()) {
+	        LocationDeMateriel materiel = entry.getKey();
+	        int quantiteReservee = entry.getValue();
+
+	        if (annulation) {
+	            materiel.setQuantiteDisponible(materiel.getQuantiteDisponible() + quantiteReservee);
+	        } else {
+	            materiel.setQuantiteDisponible(materiel.getQuantiteDisponible() - quantiteReservee);
+	        }
+	    }
+	}
+   private static int calculerQuantiteReservee(LocationDeMateriel materiel) {
+       int totalReserve = 0;
+       for (EspaceClient client : SystemeGestion.clients) {
+           Integer quantite = client.getReservations().get(materiel);
+           if (quantite != null) {
+               totalReserve += quantite;
+           }
+       }
+       return totalReserve;
+   }
+   public static void afficherStockMateriel() {
+       System.out.println("Informations sur le stock de matériel :");
+       for (LocationDeMateriel materiel : SystemeGestion.materiels) {
+           int quantiteReservee = calculerQuantiteReservee(materiel);
+           int quantiteDisponible = materiel.getQuantiteDisponible() - quantiteReservee;
+           System.out.println(materiel.getNom() + ": " + quantiteDisponible + " disponibles");
+       }
+   }
+
+   private static EspaceClient chercherClient(String email) {
+       for (EspaceClient client : SystemeGestion.clients) {
            if (client.getEmail().equals(email)) {
                return client;
            }
