@@ -35,7 +35,7 @@ class Vendeur {
            System.out.println("2. Supprimer une réservation");
            System.out.println("3. Revenir au menu principal (espace client)");
            System.out.println("4. Afficher le stock de matériel(en utilisant OCaml)");
-           System.out.println("5. Afficher les informations sur le stock(rn utilisant java)");
+           System.out.println("5. Afficher les informations sur le stock(en utilisant java)");
            String choixStr = scanner.nextLine();
            int choix;
 
@@ -72,7 +72,7 @@ class Vendeur {
    } 
    private static void afficherStock() {
        try {
-           ProcessBuilder pb = new ProcessBuilder("ocaml", "C:\\Users\\nassi\\Documents\\IUL\\IUL 1\\POO\\workplace\\nom_du_fichier_ocaml.ml");
+           ProcessBuilder pb = new ProcessBuilder("ocaml", "C:\\Users\\nassi\\Documents\\IUL\\IUL 1\\POO\\workplace\\SystemeGestionAudiovisuel\\OCaml.ml");
            pb.redirectErrorStream(true);
            Process p = pb.start();
            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
