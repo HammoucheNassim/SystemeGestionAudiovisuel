@@ -8,6 +8,10 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.HashMap;
 import java.util.ArrayList;
+
+
+
+
 class LocationDeMateriel {
 	private String nom;
 	   private double prix;

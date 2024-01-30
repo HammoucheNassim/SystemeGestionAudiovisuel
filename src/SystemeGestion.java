@@ -51,7 +51,7 @@ public class SystemeGestion {
     public static int choisirQuantite(Scanner scanner, LocationDeMateriel materiel) {
         System.out.print("Combien de " + materiel.getNom() + " souhaitez-vous louer ? (Prix unitaire : " + materiel.getPrix() + " €) ");
         int quantite = scanner.nextInt();
-        scanner.nextLine();  // Consomme la fin de ligne après le nombre
+        scanner.nextLine();  
         return quantite;
     }
 
@@ -111,9 +111,7 @@ public class SystemeGestion {
         }
     }
 
-    public static void chargerReservations() {
-        // Cette méthode doit être implémentée en fonction de la manière dont vous stockez et chargez les données.
-    }
+    
 
     private static LocationDeMateriel trouverMateriel(String nom) {
         for (LocationDeMateriel materiel : materiels) {
@@ -126,7 +124,7 @@ public class SystemeGestion {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        chargerReservations(); // Charger les réservations existantes au démarrage
+        
         while (continuerProgramme) {
             System.out.print("Êtes-vous un client ou un vendeur ? (client/vendeur/deconnexion) : ");
             String choix = scanner.nextLine().trim().toLowerCase();

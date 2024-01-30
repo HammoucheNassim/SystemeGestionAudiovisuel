@@ -7,13 +7,16 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.HashMap;
+
+
 class EspaceClient {
-    private final String email;
+    
+	private final String email;
     
     private LocalDate dateReservation;
+    
     private String adresse;
     
-
     private Map<LocationDeMateriel, Integer> reservations;
 
     public Map<LocationDeMateriel, Integer> getReservations() {
